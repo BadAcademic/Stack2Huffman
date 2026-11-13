@@ -2,7 +2,7 @@
 
 Source code for a hands-on C++ course on data structures: from stack and queue
 to binary trees, red-black trees, a Huffman coder and hash tables. Every lesson
-is a small self-contained program with its own data structure implementation.
+is a small program with its own data structure implementation.
 
 [Русская версия](README.ru.md)
 
@@ -29,7 +29,7 @@ cmake -B build -G "Visual Studio 18 2026"
 cmake --build build --config Debug
 ```
 
-Use `-G "Visual Studio 17 2022"` with CMake 3.20+ for Visual Studio 2022; the
+Use `-G "Visual Studio 17 2022"` with CMake 3.21+ for Visual Studio 2022; the
 `Visual Studio 18 2026` generator requires CMake 4.2+.
 
 Build a single lesson by its target name:
