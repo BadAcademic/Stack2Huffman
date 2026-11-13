@@ -95,6 +95,12 @@ void HuffmanTree<T>::make_ftable (const T* data, const int length) {
 template <typename T>
 void HuffmanTree<T>::make_huffman_tree () {
 
+	if (ftable.size () == 0) {
+
+		root = nullptr;
+		return;
+	}
+
 	PriorityQueue<Pair<int, Node*>> PQ;
 	
 	int id{};
@@ -146,25 +152,28 @@ void HuffmanTree<T>::print_huffman_tree (const std::string fileName) {
 
 	out << "digraph graphname {\n";
 
-	Stack<Node*> nodes;
-	nodes.push (root);
+	if (root != nullptr) {
 
-	while (!nodes.empty ()) {
+		Stack<Node*> nodes;
+		nodes.push (root);
 
-		Node* n = nodes.top ();
-		nodes.pop ();
+		while (!nodes.empty ()) {
 
-		if (n->id < 0)
-			out << n->id << " [label = \" \"];\n";
-		else
-			out << n->id << " [label = \"" << n->data << "\"];\n";
-		if (n->l != 0) {
-			nodes.push (n->l);
-			out << n->id << " -> " << n->l->id << " [label = 0];\n";
-		}
-		if (n->r != 0) {
-			nodes.push (n->r);
-			out << n->id << " -> " << n->r->id << " [label = 1];\n";
+			Node* n = nodes.top ();
+			nodes.pop ();
+
+			if (n->id < 0)
+				out << n->id << " [label = \" \"];\n";
+			else
+				out << n->id << " [label = \"" << n->data << "\"];\n";
+			if (n->l != 0) {
+				nodes.push (n->l);
+				out << n->id << " -> " << n->l->id << " [label = 0];\n";
+			}
+			if (n->r != 0) {
+				nodes.push (n->r);
+				out << n->id << " -> " << n->r->id << " [label = 1];\n";
+			}
 		}
 	}
 	out << "}";
@@ -260,7 +269,8 @@ void HuffmanTree<T>::encode (const std::string inFileName, const std::string out
 		out.write ((char*)&w.second, sizeof (int));
 	}
 
-	out.write ((char*)&len, sizeof (int));
+	int lenInt{static_cast<int>(len)};
+	out.write ((char*)&lenInt, sizeof (int));
 	char buf{};
 	char one{1};
 	int nb{};
@@ -301,10 +311,10 @@ void HuffmanTree<T>::decode (const std::string inFileName, const std::string out
 	if (!in)
 		throw gexception (gexception::OpenFile);
 
-	size_t n{};
-	in.read ((char*)&n, sizeof (size_t));
+	int n{};
+	in.read ((char*)&n, sizeof (int));
 	T s{};
-	size_t f{};
+	int f{};
 	for (int i{}; i < n; i++) {
 
 		in.read ((char*)&s, sizeof (T));
@@ -313,8 +323,8 @@ void HuffmanTree<T>::decode (const std::string inFileName, const std::string out
 		ftable.insert (s, f);
 	}
 
-	size_t len{};
-	in.read ((char*)&len, sizeof (size_t));
+	int len{};
+	in.read ((char*)&len, sizeof (int));
 	char* data = new (std::nothrow) char [len];
 	if (data == nullptr)
 		throw gexception (gexception::MemAlloc);
@@ -327,10 +337,21 @@ void HuffmanTree<T>::decode (const std::string inFileName, const std::string out
 	if (!out)
 		throw gexception (gexception::OpenFile);
 
+	if (root != nullptr && root->l == nullptr && root->r == nullptr) {
+
+		for (int i{}; i < len; i++)
+			out.write ((char*)&root->data, sizeof (T));
+		out.close ();
+		delete[] data;
+		return;
+	}
+
 	unsigned char one{128};
 	int nn{};
 	int nb{};
-	char buf{data[nn]};
+	char buf{};
+	if (len > 0)
+		buf = data[nn];
 	for (int i{}; i < len; i++) {
 
 		Node* n{root};
@@ -346,7 +367,8 @@ void HuffmanTree<T>::decode (const std::string inFileName, const std::string out
 
 			if (nb == 8) {
 				nn++;
-				buf = data[nn];
+				if (nn < len)
+					buf = data[nn];
 				nb = 0;
 			}
 			if (n->id >= 0) {
