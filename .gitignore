@@ -1,0 +1,46 @@
+# Build output
+build/
+out/
+CMakeCache.txt
+CMakeFiles/
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.*
+*.filters
+*.user
+*.suo
+*.tlog
+*.vsidx
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+
+# VS Code
+.vscode/
+
+# Backups and temp files
+*.bak
+*.tmp
+*.zip
+~$*
+
+# Logs
+*.log
+
+# Third-party tools (not published)
+src/vld/
+
+# Large demo data
+big_data.txt
+
+# Internal docs (not published)
+docs/
+.claude/
+.superpowers/
