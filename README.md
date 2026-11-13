@@ -104,8 +104,8 @@ CMakeLists.txt       single build configuration for all targets
 
 ## Notes
 
-- Some lessons read a `big_data.txt` word list from their working directory
-  for testing or demos; that file is not part of the repository — supply your own.
+- The Huffman lesson (`160_huffman_tree`) reads a `big_data.txt` word list from
+  its working directory; that file is not part of the repository — supply your own.
 - Visual Leak Detector (`src/vld/`) is a third-party tool and is not included.
 
 ## License
